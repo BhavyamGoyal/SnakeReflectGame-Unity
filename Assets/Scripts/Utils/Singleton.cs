@@ -4,7 +4,7 @@ public class Singleton<T>
     where T : Singleton<T>, new()
 {
     private static T instance;
-    public void SetInstance(T obj)
+    protected void SetInstance(T obj)
     {
         instance = obj;
     }

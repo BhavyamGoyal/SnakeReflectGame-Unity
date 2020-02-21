@@ -6,15 +6,22 @@ public class Snake : MonoBehaviour
 {
     Animation anim;
     SteeringWheel wheel;
-    public float curspeed = 2;
+    public float playerSpeed = 2;
     public int rotationspeed = 50;
-    Rigidbody2D rigidbody;
+    Rigidbody2D snakeRigidbody;
+    PlayerConfig playerConfig;
 
     private void Start()
     {
         anim = transform.GetComponentInChildren<Animation>();
-        rigidbody = GetComponent<Rigidbody2D>();
+        snakeRigidbody = GetComponent<Rigidbody2D>();
         wheel = FindObjectOfType<SteeringWheel>();
+    }
+    public void SetPlayerConfig(PlayerConfig playerConfig)
+    {
+        this.playerConfig = playerConfig;
+        playerSpeed = playerConfig.playerSpeed;
+        rotationspeed = playerConfig.playerRotationSpeed;
     }
 
     // Update is called once per frame
@@ -36,7 +43,7 @@ public class Snake : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        rigidbody.velocity = transform.up * (curspeed * Time.deltaTime);
+        snakeRigidbody.velocity = (transform.up * (playerSpeed));
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -52,8 +59,7 @@ public class Snake : MonoBehaviour
         switch (collision.gameObject.name)
         {
             case "top":
-                normalAngel =  transform.rotation.eulerAngles.z;
-                transform.rotation = Quaternion.Euler(new Vector3(0, 0, (180-normalAngel)));
+                transform.rotation = Quaternion.Euler(new Vector3(0, 0, (180- transform.rotation.eulerAngles.z)));
                 break;
             case "right":
                 normalAngel = transform.rotation.eulerAngles.z - 180;
@@ -71,7 +77,7 @@ public class Snake : MonoBehaviour
         if (collision.gameObject.tag == "food")
         {
             UIManager.Instance.UpdateScore();
-            MapController.Instance.RemoveFood();
+            GameManager.Instance.ResetFoodClock();
         }
 
     }

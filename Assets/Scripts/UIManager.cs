@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager>
 {
+
     Button pauseButton, startButton;
     Text scoreText, playText, playButtonText;
     GameObject startUIObject;
@@ -19,6 +20,7 @@ public class UIManager : Singleton<UIManager>
         playButtonText = startUIObject.transform.GetChild(1).GetComponentInChildren<Text>();
         startButton.onClick.AddListener(Start);
         pauseButton.onClick.AddListener(Pause);
+        pauseButton.gameObject.SetActive(false);
         SetInstance(this);
     }
 
@@ -38,18 +40,18 @@ public class UIManager : Singleton<UIManager>
                 pauseButton.gameObject.SetActive(true);
                 GameManager.Instance.SpawnPlayer();
                 break;
-
             case "Resume":
                 break;
-            case "Restart":
+            case "Next Level":
+                GameManager.Instance.UpdateLevel();
                 Application.LoadLevel(0);
                 break;
         }
     }
     public void ShowGameOver()
     {
-        playText.text = "Your score is :" + score;
-        playButtonText.text = "Restart";
+        playText.text = "Your score for level "+(GameManager.Instance.currentLevel+1)+" is :" + score;
+        playButtonText.text = "Next Level";
         startUIObject.SetActive(true);
     }
     
@@ -57,7 +59,7 @@ public class UIManager : Singleton<UIManager>
     public void Pause()
     {
         Time.timeScale = 0;
-        playText.text = "Your score is :" + score;
+        playText.text = "Your score for level " + (GameManager.Instance.currentLevel + 1) + " is :" + score;
         playButtonText.text = "Resume";
         startUIObject.SetActive(true);
     }

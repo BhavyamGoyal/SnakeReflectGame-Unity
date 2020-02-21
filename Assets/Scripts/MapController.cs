@@ -6,14 +6,17 @@ public class MapController : Singleton<MapController>
 {
     public GameObject tilePrefab;
     public Sprite grassSprite;
-    GameObject levelHolder, food;
+    GameObject levelHolder;
+    SpriteRenderer food;
     int width, height;
     List<int> map=new List<int>();
+    List<Sprite> foodSprites;
     public  MapController() { }
-    public MapController(GameObject tilePrefab,Sprite grassSprite,GameObject food)
+    public MapController(GameObject tilePrefab,Sprite grassSprite,GameObject food,List<Sprite> foodSprites)
     {
-        this.food = GameObject.Instantiate(food);
-        this.food.SetActive(false);
+        this.food = GameObject.Instantiate(food).GetComponent<SpriteRenderer>();
+        this.foodSprites = foodSprites;
+        this.food.gameObject.SetActive(false);
         this.tilePrefab = tilePrefab;
         this.grassSprite = grassSprite;
         SetInstance(this);
@@ -28,12 +31,14 @@ public class MapController : Singleton<MapController>
         spawnPoint.x = spawnPoint.x - xOffset;
         spawnPoint.y = spawnPoint.y - yOffset;
         food.transform.position = spawnPoint;
-        food.SetActive(true);
+        food.gameObject.SetActive(true);
+        int ftype = Random.Range(0,foodSprites.Count);
+        food.sprite = foodSprites[ftype];
     }
 
     public void RemoveFood()
     {
-        food.SetActive(false);
+        food.gameObject.SetActive(false);
     }
     public void GenerateMap(int width, int height)
     {
